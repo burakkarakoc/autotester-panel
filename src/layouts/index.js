@@ -1,2 +1,2 @@
-export * from "./dashboard";
-export * from "./auth";
+export * from "@/layouts/dashboard";
+export * from "@/layouts/auth";

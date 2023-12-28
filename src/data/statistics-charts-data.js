@@ -1,12 +1,12 @@
-import { chartsConfig } from "../configs";
+import { chartsConfig } from "@/configs";
 
 const websiteViewsChart = {
   type: "bar",
   height: 220,
   series: [
     {
-      name: "Views",
-      data: [50, 20, 10, 22, 50, 10, 40],
+      name: "Tests",
+      data: [5, 2, 6, 12, 4, 16, 3],
     },
   ],
   options: {
@@ -30,8 +30,8 @@ const dailySalesChart = {
   height: 220,
   series: [
     {
-      name: "Sales",
-      data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
+      name: "Succes Rate",
+      data: [74, 67, 64, 66, 70, 82, 84, 78, 91],
     },
   ],
   options: {
@@ -107,25 +107,25 @@ const completedTasksChart = {
 export const statisticsChartsData = [
   {
     color: "white",
-    title: "Website View",
-    description: "Last Campaign Performance",
-    footer: "campaign sent 2 days ago",
+    title: "Your tests this week",
+    description: "Total scenarios you have run this month",
+    footer: "updated 2 days ago",
     chart: websiteViewsChart,
   },
   {
     color: "white",
-    title: "Daily Sales",
-    description: "15% increase in today sales",
+    title: "Your success rate this week",
+    description: "Succeded tests / Total tests",
     footer: "updated 4 min ago",
     chart: dailySalesChart,
   },
-  {
-    color: "white",
-    title: "Completed Tasks",
-    description: "Last Campaign Performance",
-    footer: "just updated",
-    chart: completedTasksChart,
-  },
+  // {
+  //   color: "white",
+  //   title: "Completed Tests",
+  //   description: "Last Campaign Performance",
+  //   footer: "just updated",
+  //   chart: completedTasksChart,
+  // },
 ];
 
 export default statisticsChartsData;

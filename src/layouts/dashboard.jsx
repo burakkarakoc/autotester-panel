@@ -6,8 +6,8 @@ import {
   DashboardNavbar,
   // Configurator,
   Footer,
-} from "../widgets/layout/index.js";
-import routes from "../routes.jsx";
+} from "@/widgets/layout";
+import routes from "@/routes";
 // import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
 
 export function Dashboard() {
@@ -39,10 +39,11 @@ export function Dashboard() {
           {routes.map(
             ({ layout, pages }) =>
               layout === "dashboard" &&
-              pages.map(({ path, element }) => (
+              pages.map(({ path, element }) => (   
                 <Route exact path={path} element={element} />
               ))
           )}
+
         </Routes>
         <div className="text-blue-gray-600">
           <Footer />

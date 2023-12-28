@@ -19,14 +19,24 @@ import {
   PencilIcon,
 } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
-import { ProfileInfoCard, MessageCard } from "../../widgets/cards";
+import { ProfileInfoCard, MessageCard } from "@/widgets/cards";
 import {
   platformSettingsData,
   conversationsData,
   projectsData,
-} from "../../data/index";
+  projectsTableData,
+} from "@/data";
+import { useState } from "react";
 
 export function Profile() {
+  const [conversations, setConversations] = useState(conversationsData);
+
+  const handleRemoveConversation = (name) => {
+    const updatedConversations = conversations.filter(
+      (conversation) => conversation.name !== name
+    );
+    setConversations(updatedConversations);
+  };
   return (
     <>
       {/* bg image */}
@@ -40,15 +50,15 @@ export function Profile() {
             <div className="flex items-center gap-6">
               {/* profile avatar */}
               <Avatar
-                src="/img/bruce-mars.jpeg"
-                alt="bruce-mars"
+                src="/img/user.jpeg"
+                alt="burak-karakoc"
                 size="xl"
                 variant="rounded"
                 className="rounded-lg shadow-lg shadow-blue-gray-500/40"
               />
               <div>
                 <Typography variant="h5" color="blue-gray" className="mb-1">
-                  Richard Davis
+                  Burak Karakoc
                 </Typography>
                 <Typography
                   variant="small"
@@ -59,13 +69,9 @@ export function Profile() {
               </div>
             </div>
             {/* 3 buttons as tabs */}
-            <div className="w-96">
-              <Tabs value="app">
+            {/* <div className="w-96">
+              <Tabs value="message">
                 <TabsHeader>
-                  <Tab value="app">
-                    <HomeIcon className="-mt-1 mr-2 inline-block h-5 w-5" />
-                    App
-                  </Tab>
                   <Tab value="message">
                     <ChatBubbleLeftEllipsisIcon className="-mt-0.5 mr-2 inline-block h-5 w-5" />
                     Message
@@ -76,11 +82,11 @@ export function Profile() {
                   </Tab>
                 </TabsHeader>
               </Tabs>
-            </div>
+            </div> */}
           </div>
           {/* Platform settings */}
-          <div className="gird-cols-1 mb-12 grid gap-12 px-4 lg:grid-cols-2 xl:grid-cols-3">
-            <div>
+          <div className="gird-cols-1 mb-12 grid gap-12 px-4 lg:grid-cols-2 xl:grid-cols-2">
+            {/* <div>
               <Typography variant="h6" color="blue-gray" className="mb-3">
                 Platform Settings
               </Typography>
@@ -106,21 +112,25 @@ export function Profile() {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
             {/* Profile info */}
             <ProfileInfoCard
               title="Profile Information"
               description="Hi, I'm Alec Thompson, Decisions: If you can't decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
               details={{
-                "first name": "Alec M. Thompson",
-                mobile: "(44) 123 1234 123",
-                email: "alecthompson@mail.com",
-                location: "USA",
-                social: (
+                "full name": "Burak Karakoc",
+                mobile: "(90) 530 065 44 55",
+                email: "burakkarakoc5@gmail.com",
+                location: "TR/DE",
+                links: (
                   <div className="flex items-center gap-4">
-                    <i className="fa-brands fa-facebook text-blue-700" />
-                    <i className="fa-brands fa-twitter text-blue-400" />
-                    <i className="fa-brands fa-instagram text-purple-500" />
+                    {/* <i className="fa-brands fa-facebook text-blue-700" /> */}
+                    <a href="https://www.linkedin.com/in/burakkarakoc/">
+                      <i className="fa-brands fa-linkedin text-blue-700" />
+                    </a>
+                    <a href="https://github.com/burakkarakoc">
+                      <i className="fa-brands fa-github text-black-400" />
+                    </a>
                   </div>
                 ),
               }}
@@ -136,13 +146,17 @@ export function Profile() {
                 Messages and Test PRs
               </Typography>
               <ul className="flex flex-col gap-6">
-                {conversationsData.map((props) => (
+                {conversations.map((props) => (
                   <MessageCard
                     key={props.name}
                     {...props}
                     action={
-                      <Button variant="text" size="sm">
-                        reply
+                      <Button
+                        variant="text"
+                        size="sm"
+                        onClick={() => handleRemoveConversation(props.name)}
+                      >
+                        Remove
                       </Button>
                     }
                   />
@@ -159,10 +173,10 @@ export function Profile() {
               variant="small"
               className="font-normal text-blue-gray-500"
             >
-              Architects design houses
+              Projects that you are working on
             </Typography>
             <div className="mt-6 grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-4">
-              {projectsData.map(
+              {projectsTableData.map(
                 ({ img, title, description, tag, route, members }) => (
                   <Card key={title} color="transparent" shadow={false}>
                     <CardHeader

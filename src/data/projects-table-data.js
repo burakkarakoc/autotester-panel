@@ -1,64 +1,47 @@
 export const projectsTableData = [
   {
-    img: "/img/logo-xd.svg",
-    name: "Material XD Version",
+    img: "/img/findeks.jpeg",
+    projectName: "Findeks Login System",
     members: [
       { img: "/img/team-1.jpeg", name: "Romina Hadid" },
       { img: "/img/team-2.jpeg", name: "Ryan Tompson" },
       { img: "/img/team-3.jpeg", name: "Jessica Doe" },
       { img: "/img/team-4.jpeg", name: "Alexander Smith" },
     ],
-    budget: "$14,000",
+    total: "14,000",
     completion: 60,
   },
   {
-    img: "/img/logo-atlassian.svg",
-    name: "Add Progress Track",
+    img: "/img/canonical.jpeg",
+    projectName: "Snapstore Download Functionality",
     members: [
       { img: "/img/team-2.jpeg", name: "Ryan Tompson" },
       { img: "/img/team-4.jpeg", name: "Alexander Smith" },
     ],
-    budget: "$3,000",
+    total: "3,000",
     completion: 10,
   },
   {
     img: "/img/logo-slack.svg",
-    name: "Fix Platform Errors",
+    projectName: "Team Messaging",
     members: [
       { img: "/img/team-3.jpeg", name: "Jessica Doe" },
       { img: "/img/team-1.jpeg", name: "Romina Hadid" },
     ],
-    budget: "Not set",
+    total: "426",
     completion: 100,
   },
   {
     img: "/img/logo-spotify.svg",
-    name: "Launch our Mobile App",
+    projectName: "Connected Sound Functionality",
     members: [
       { img: "/img/team-4.jpeg", name: "Alexander Smith" },
       { img: "/img/team-3.jpeg", name: "Jessica Doe" },
       { img: "/img/team-2.jpeg", name: "Ryan Tompson" },
       { img: "/img/team-1.jpeg", name: "Romina Hadid" },
     ],
-    budget: "$20,500",
+    total: "20,500",
     completion: 100,
-  },
-  {
-    img: "/img/logo-jira.svg",
-    name: "Add the New Pricing Page",
-    members: [{ img: "/img/team-4.jpeg", name: "Alexander Smith" }],
-    budget: "$500",
-    completion: 25,
-  },
-  {
-    img: "/img/logo-invision.svg",
-    name: "Redesign New Online Shop",
-    members: [
-      { img: "/img/team-1.jpeg", name: "Romina Hadid" },
-      { img: "/img/team-4.jpeg", name: "Alexander Smith" },
-    ],
-    budget: "$2,000",
-    completion: 40,
   },
 ];
 

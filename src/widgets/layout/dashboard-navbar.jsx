@@ -24,7 +24,7 @@ import {
   useMaterialTailwindController,
   setOpenConfigurator,
   setOpenSidenav,
-} from "../../context/index.jsx";
+} from "@/context";
 
 export function DashboardNavbar() {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -103,7 +103,7 @@ export function DashboardNavbar() {
             </IconButton>
           </Link> */}
 
-          {/* Notifications menu component */}
+          {/* Plans menu component */}
           <Menu>
             <MenuHandler>
               <IconButton variant="text" color="blue-gray">

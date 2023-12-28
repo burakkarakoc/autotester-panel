@@ -8,7 +8,7 @@ import {
 } from "@material-tailwind/react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 
-export function Notifications() {
+export function Plans() {
   const [showAlerts, setShowAlerts] = React.useState({
     blue: true,
     green: true,
@@ -42,7 +42,9 @@ export function Notifications() {
               key={color}
               open={showAlerts[color]}
               color={color}
-              onClose={() => setShowAlerts((current) => ({ ...current, [color]: false }))}
+              onClose={() =>
+                setShowAlerts((current) => ({ ...current, [color]: false }))
+              }
             >
               A simple {color} alert with an <a href="#">example link</a>. Give
               it a click if you like.
@@ -70,10 +72,12 @@ export function Notifications() {
               icon={
                 <InformationCircleIcon strokeWidth={2} className="h-6 w-6" />
               }
-              onClose={() => setShowAlertsWithIcon((current) => ({
-                ...current,
-                [color]: false,
-              }))}
+              onClose={() =>
+                setShowAlertsWithIcon((current) => ({
+                  ...current,
+                  [color]: false,
+                }))
+              }
             >
               A simple {color} alert with an <a href="#">example link</a>. Give
               it a click if you like.
@@ -85,4 +89,4 @@ export function Notifications() {
   );
 }
 
-export default Notifications;
+export default Plans;

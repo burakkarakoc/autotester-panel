@@ -19,6 +19,7 @@ export function ProfileInfoCard({ title, description, details, action }) {
           {title}
         </Typography>
         {action}
+        {/* ADD EDİT PROFİLE POPUP ON CLİCKED */}
       </CardHeader>
       <CardBody className="p-0">
         {description && (

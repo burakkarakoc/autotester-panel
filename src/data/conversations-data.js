@@ -2,27 +2,27 @@ export const conversationsData = [
   {
     img: "/img/team-1.jpeg",
     name: "Sophie B.",
-    message: "Hi! I need more information...",
+    message: "Can you run exception scenarios for auth page?",
   },
   {
     img: "/img/team-2.jpeg",
     name: "Alexander",
-    message: "Awesome work, can you...",
+    message: "Dummy message...",
   },
   {
     img: "/img/team-3.jpeg",
     name: "Ivanna",
-    message: "About files I can...",
+    message: "Dummy message...",
   },
   {
     img: "/img/team-4.jpeg",
     name: "Peterson",
-    message: "Have a great afternoon...",
+    message: "Dummy message...",
   },
   {
     img: "/img/bruce-mars.jpeg",
     name: "Bruce Mars",
-    message: "Hi! I need more information...",
+    message: "Dummy message...",
   },
 ];
 

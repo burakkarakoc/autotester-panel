@@ -1,26 +1,26 @@
 import {
-  BanknotesIcon,
-  UserPlusIcon,
-  UsersIcon,
   ChartBarIcon,
+  BuildingOfficeIcon,
+  BugAntIcon,
+  UserIcon,
 } from "@heroicons/react/24/solid";
 
 export const statisticsCardsData = [
   {
     color: "gray",
-    icon: BanknotesIcon,
-    title: "Today's Money",
-    value: "$53k",
+    icon: BuildingOfficeIcon,
+    title: "Company's Usage",
+    value: "Tier 1",
     footer: {
       color: "text-green-500",
-      value: "+55%",
-      label: "than last week",
+      value: "",
+      label: "calculated wrt. total usage",
     },
   },
   {
     color: "gray",
-    icon: UsersIcon,
-    title: "Today's Users",
+    icon: ChartBarIcon,
+    title: "Company Scenario Count",
     value: "2,300",
     footer: {
       color: "text-green-500",
@@ -30,9 +30,9 @@ export const statisticsCardsData = [
   },
   {
     color: "gray",
-    icon: UserPlusIcon,
-    title: "New Clients",
-    value: "3,462",
+    icon: UserIcon,
+    title: "Your Screnario Count",
+    value: "152",
     footer: {
       color: "text-red-500",
       value: "-2%",
@@ -41,13 +41,13 @@ export const statisticsCardsData = [
   },
   {
     color: "gray",
-    icon: ChartBarIcon,
-    title: "Sales",
-    value: "$103,430",
+    icon: BugAntIcon,
+    title: "Assigned to you",
+    value: "12",
     footer: {
       color: "text-green-500",
-      value: "+5%",
-      label: "than yesterday",
+      value: "",
+      label: "Tests that assigned to you",
     },
   },
 ];

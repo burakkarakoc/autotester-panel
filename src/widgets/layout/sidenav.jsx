@@ -7,10 +7,7 @@ import {
   IconButton,
   Typography,
 } from "@material-tailwind/react";
-import {
-  useMaterialTailwindController,
-  setOpenSidenav,
-} from "../../context/index.jsx";
+import { useMaterialTailwindController, setOpenSidenav } from "@/context";
 
 export function Sidenav({ brandImg, brandName, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -27,7 +24,9 @@ export function Sidenav({ brandImg, brandName, routes }) {
         openSidenav ? "translate-x-0" : "-translate-x-80"
       } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100`}
     >
-      <div className={`relative`}>
+      <div
+        className={`relative`}
+      >
         <Link to="/" className="py-6 px-6 text-center">
           <Typography
             variant="h4"

@@ -1,1 +1,1 @@
-export * from "./statistics-chart";
+export * from "@/widgets/charts/statistics-chart";
