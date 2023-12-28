@@ -1,88 +1,145 @@
 import React from "react";
 import {
-  Typography,
-  Alert,
   Card,
   CardHeader,
   CardBody,
+  Typography,
+  Avatar,
+  Chip,
+  Tooltip,
+  Progress,
+  Button,
 } from "@material-tailwind/react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import { projectsTableData } from "@/data";
 
 export function Plans() {
-  const [showAlerts, setShowAlerts] = React.useState({
-    blue: true,
-    green: true,
-    orange: true,
-    red: true,
-  });
-  const [showAlertsWithIcon, setShowAlertsWithIcon] = React.useState({
-    blue: true,
-    green: true,
-    orange: true,
-    red: true,
-  });
-  const alerts = ["gray", "green", "orange", "red"];
+  // const [showAlerts, setShowAlerts] = React.useState({
+  //   blue: true,
+  //   green: true,
+  //   orange: true,
+  //   red: true,
+  // });
+  // const [showAlertsWithIcon, setShowAlertsWithIcon] = React.useState({
+  //   blue: true,
+  //   green: true,
+  //   orange: true,
+  //   red: true,
+  // });
+  // const alerts = ["gray", "green", "orange", "red"];
 
+  // TODO
   return (
-    <div className="mx-auto my-20 flex max-w-screen-lg flex-col gap-8">
+    // <div className="mx-auto my-20 flex max-w-screen-lg flex-col gap-8">
+    <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
-        <CardHeader
-          color="transparent"
-          floated={false}
-          shadow={false}
-          className="m-0 p-4"
-        >
-          <Typography variant="h5" color="blue-gray">
-            Alerts
+        <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
+          <Typography variant="h6" color="white">
+            Projects Table
           </Typography>
         </CardHeader>
-        <CardBody className="flex flex-col gap-4 p-4">
-          {alerts.map((color) => (
-            <Alert
-              key={color}
-              open={showAlerts[color]}
-              color={color}
-              onClose={() =>
-                setShowAlerts((current) => ({ ...current, [color]: false }))
-              }
-            >
-              A simple {color} alert with an <a href="#">example link</a>. Give
-              it a click if you like.
-            </Alert>
-          ))}
-        </CardBody>
-      </Card>
-      <Card>
-        <CardHeader
-          color="transparent"
-          floated={false}
-          shadow={false}
-          className="m-0 p-4"
+        <CardBody
+          className="overflow-auto px-0 pt-0 pb-2"
+          style={{ maxHeight: "340px" }}
         >
-          <Typography variant="h5" color="blue-gray">
-            Alerts with Icon
-          </Typography>
-        </CardHeader>
-        <CardBody className="flex flex-col gap-4 p-4">
-          {alerts.map((color) => (
-            <Alert
-              key={color}
-              open={showAlertsWithIcon[color]}
-              color={color}
-              icon={
-                <InformationCircleIcon strokeWidth={2} className="h-6 w-6" />
-              }
-              onClose={() =>
-                setShowAlertsWithIcon((current) => ({
-                  ...current,
-                  [color]: false,
-                }))
-              }
-            >
-              A simple {color} alert with an <a href="#">example link</a>. Give
-              it a click if you like.
-            </Alert>
-          ))}
+          <table className="w-full min-w-[640px] table-auto">
+            <thead>
+              <tr>
+                {["Project", "Members", "Total", "Completion"].map((el) => (
+                  <th
+                    key={el}
+                    className="border-b border-blue-gray-50 py-3 px-5 text-left"
+                  >
+                    <Typography
+                      variant="small"
+                      className="text-[11px] font-bold uppercase text-blue-gray-400"
+                    >
+                      {el}
+                    </Typography>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {projectsTableData.map(
+                ({ img, name, members, total, completion }, key) => {
+                  const className = `py-3 px-5 ${
+                    key === projectsTableData.length - 1
+                      ? ""
+                      : "border-b border-blue-gray-50"
+                  }`;
+
+                  return (
+                    <tr key={name}>
+                      <td className={""}>
+                        <div className="flex items-center gap-4">
+                          <Avatar src={img} alt={name} size="sm" />
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-bold"
+                          >
+                            {name}
+                          </Typography>
+                        </div>
+                      </td>
+                      <td className={""}>
+                        {members.map(({ img, name }, key) => (
+                          <Tooltip key={name} content={name}>
+                            <Avatar
+                              src={img}
+                              alt={name}
+                              size="xs"
+                              variant="circular"
+                              className={`cursor-pointer border-2 border-white ${
+                                key === 0 ? "" : "-ml-2.5"
+                              }`}
+                            />
+                          </Tooltip>
+                        ))}
+                      </td>
+                      <td className={""}>
+                        <Typography
+                          variant="small"
+                          className="text-xs font-medium text-blue-gray-600"
+                        >
+                          {total}
+                        </Typography>
+                      </td>
+                      <td className={""}>
+                        <div className="w-10/12">
+                          <Typography
+                            variant="small"
+                            className="mb-1 block text-xs font-medium text-blue-gray-600"
+                          >
+                            {completion}%
+                          </Typography>
+                          <Progress
+                            value={completion}
+                            variant="gradient"
+                            color={completion === 100 ? "green" : "gray"}
+                            className="h-1"
+                          />
+                        </div>
+                      </td>
+                      {/* <td className={className}>
+                        <Typography
+                          as="a"
+                          href="#"
+                          className="text-xs font-semibold text-blue-gray-600"
+                        >
+                          <EllipsisVerticalIcon
+                            strokeWidth={2}
+                            className="h-5 w-5 text-inherit"
+                          />
+                        </Typography>
+                      </td> */}
+                    </tr>
+                  );
+                }
+              )}
+            </tbody>
+          </table>
         </CardBody>
       </Card>
     </div>
