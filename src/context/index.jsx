@@ -83,3 +83,75 @@ export const setFixedNavbar = (dispatch, value) =>
   dispatch({ type: "FIXED_NAVBAR", value });
 export const setOpenConfigurator = (dispatch, value) =>
   dispatch({ type: "OPEN_CONFIGURATOR", value });
+
+import { createContext, useState, useEffect, useContext } from "react";
+import { auth } from "@/service/firebase";
+
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
+
+const AuthContext = createContext(null);
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+
+  const login = async (email, password) => {
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    setUser(userCredential.user);
+  };
+
+  const signup = async (email, password) => {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    setUser(userCredential.user);
+  };
+
+  const logout = async () => {
+    const userCredential = await signOut(auth);
+    setUser(null);
+  };
+
+  const [loading, setLoading] = useState(true);
+
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, (user) => {
+  //     setUser(user);
+  //     setLoading(false); // Set loading to false once the user is fetched
+  //   });
+
+  //   return () => unsubscribe();
+  // }, []);
+
+  // Listen to the Firebase Auth state and set the user
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+        setLoading(false); // Set loading to false once the user is fetched
+      } else {
+        setUser(null);
+        setLoading(false); // Set loading to false once the user is fetched
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  return (
+    <AuthContext.Provider value={{ user, login, signup, logout, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => useContext(AuthContext);
