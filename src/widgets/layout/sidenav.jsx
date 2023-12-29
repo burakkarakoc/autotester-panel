@@ -67,7 +67,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                         variant={isActive ? "gradient" : "text"}
                         color={
                           isActive
-                            ? sidenavColor
+                            ? "black"
                             : sidenavType === "dark"
                             ? "white"
                             : "blue-gray"

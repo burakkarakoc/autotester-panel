@@ -45,12 +45,12 @@ export function DashboardNavbar() {
     >
       <div className="flex flex-col-reverse justify-between gap-6 md:flex-row md:items-center">
         <div className="capitalize">
-          <Breadcrumbs
+          {/* <Breadcrumbs
             className={`bg-transparent p-0 transition-all ${
               fixedNavbar ? "mt-1" : ""
             }`}
-          >
-            {/* <Link to={`/${layout}`}>
+          > */}
+          {/* <Link to={`/${layout}`}>
               <Typography
                 variant="small"
                 color="blue-gray"
@@ -59,14 +59,14 @@ export function DashboardNavbar() {
                 {layout}
               </Typography>
             </Link> */}
-            {/* <Typography
+          {/* <Typography
               variant="small"
               color="blue-gray"
               className="font-normal"
             >
               {page}
             </Typography> */}
-          </Breadcrumbs>
+          {/* </Breadcrumbs> */}
           {/* Page name component */}
           <Typography variant="h4" color="blue-gray">
             {page}
