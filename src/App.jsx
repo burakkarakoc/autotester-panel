@@ -5,11 +5,10 @@ import { Progress } from "@material-tailwind/react";
 import { useState, useEffect } from "react";
 
 function App() {
-  // const path = window.location.pathname.replace("/dashboard", "");
   const { user, loading } = useAuth();
   const [token, setToken] = useState("");
 
-  async function getTokenFromBackend(uid) {
+  function getTokenFromBackend(uid) {
     /*
       Gets token from backend based on uid.
     */
@@ -44,9 +43,10 @@ function App() {
   }, [user]);
 
   useEffect(() => {
-    if (token != "") {
-      console.log(token);
-      //TODO: Now register that token to chrome storage
+    if (token !== "") {
+      // Save the token to local storage
+      localStorage.setItem("user_token", token);
+      console.log("User token: " + token);
     }
   }, [token]);
 

@@ -7,13 +7,16 @@ import {
 } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function SignUp() {
   const { signup } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [code, setCode] = useState("");
+  const [company, setCompany] = useState(null);
+  const [error, setError] = useState("");
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -22,12 +25,29 @@ export function SignUp() {
       return;
     }
 
+    if (code == "") {
+      alert("Please provide an invite code to continue...");
+      return;
+    }
+
     try {
-      await signup(email, password);
-      // navigate("/dashboard/home");
+      const response = await fetch(
+        `http://localhost:205/code?invite_code=${code}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      setCompany(data.company_name);
+      try {
+        await signup(email, password);
+        // TODO: Also create instance in db.
+      } catch (error) {
+        alert("Failed");
+        console.error("Error during signup", error.message);
+      }
     } catch (error) {
-      console.error("Error during signup", error.message);
-      // Handle the error here
+      setError("Failed to fetch company: " + error.message);
     }
   };
 
@@ -88,6 +108,22 @@ export function SignUp() {
               size="lg"
               placeholder="********"
               onChange={(e) => setPassword(e.target.value)}
+              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+            />
+          </div>
+          <div className="mb-1 mt-3 flex flex-col gap-6">
+            <Typography
+              variant="small"
+              color="blue-gray"
+              className="-mb-3 font-medium"
+            >
+              Your invite code
+            </Typography>
+            <Input
+              type="password"
+              size="lg"
+              placeholder="********"
+              onChange={(e) => setCode(e.target.value)}
               className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
             />
           </div>

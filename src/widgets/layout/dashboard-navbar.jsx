@@ -26,11 +26,33 @@ import {
   setOpenSidenav,
 } from "@/context";
 
+import { useState } from "react";
+import { useAuth } from "@/context";
+
 export function DashboardNavbar() {
+  const { logout } = useAuth(); // Destructure logout function from the context
+
   const [controller, dispatch] = useMaterialTailwindController();
   const { fixedNavbar, openSidenav } = controller;
   const { pathname } = useLocation();
   const [layout, page] = pathname.split("/").filter((el) => el !== "");
+
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  const toggleSettingsDropdown = () => {
+    setIsSettingsOpen(!isSettingsOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout(); // Call the logout function from AuthContext
+      console.log("Successfully logged out");
+      // Optionally, redirect to login page or perform other actions post-logout
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Handle logout errors (e.g., show a notification to the user)
+    }
+  };
 
   return (
     <Navbar
@@ -185,7 +207,42 @@ export function DashboardNavbar() {
           {/* settings button component */}
           <IconButton variant="text" color="blue-gray" onClick={() => {}}>
             {/* setOpenConfigurator(dispatch, true) */}
-            <Cog6ToothIcon className="h-5 w-5 text-blue-gray-500" />
+            {/* <Cog6ToothIcon className="h-5 w-5 text-blue-gray-500" /> */}
+            <Menu open={isSettingsOpen} handler={toggleSettingsDropdown}>
+              <MenuHandler>
+                <IconButton
+                  variant="text"
+                  color="blue-gray"
+                  onClick={toggleSettingsDropdown}
+                >
+                  <Cog6ToothIcon className="h-5 w-5 text-blue-gray-500" />
+                </IconButton>
+              </MenuHandler>
+              <MenuList className="w-max border-0">
+                {/* Add your menu items here */}
+                <MenuItem>
+                  <Typography variant="small" color="blue-gray">
+                    Settings
+                  </Typography>
+                </MenuItem>
+                <MenuItem>
+                  <Typography variant="small" color="blue-gray">
+                    Account
+                  </Typography>
+                </MenuItem>
+                <MenuItem>
+                  {/* Replace with your logout logic */}
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </Typography>
+                </MenuItem>
+                {/* ... add more items as needed ... */}
+              </MenuList>
+            </Menu>
           </IconButton>
         </div>
       </div>
