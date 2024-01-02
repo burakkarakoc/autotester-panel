@@ -37,26 +37,26 @@ function App() {
 
   useEffect(() => {
     if (user) {
-      console.log(user.uid);
       getTokenFromBackend(user.uid);
     }
   }, [user]);
 
   useEffect(() => {
     if (token !== "") {
-      // Save the token to local storage
       localStorage.setItem("user_token", token);
-      console.log("User token: " + token);
+      // console.log("User token: " + token);
     }
   }, [token]);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center w-full flex-col gap-4">
-        {/* <Progress value={25} size="sm" />
+      <center>
+        <div className="flex flex-col items-center justify-center w-full flex-col gap-4">
+          {/* <Progress value={25} size="sm" />
         <Progress value={50} size="md" /> */}
-        <Progress value={75} size="lg" />
-      </div>
+          <Progress value={75} size="lg" />
+        </div>
+      </center>
     );
   }
 

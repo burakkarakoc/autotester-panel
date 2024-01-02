@@ -8,15 +8,16 @@ import {
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context";
 import { useState, useEffect } from "react";
+import { func } from "prop-types";
 
 export function SignUp() {
-  const { signup } = useAuth();
+  const { user, signup } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [code, setCode] = useState("");
-  const [company, setCompany] = useState(null);
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
+  // const [token, setToken] = useState("");
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -37,11 +38,14 @@ export function SignUp() {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
+      if (response.status == 201) {
+        alert("Please provide a valid invitation code...");
+        return;
+      }
       const data = await response.json();
-      setCompany(data.company_name);
+      console.log(data);
       try {
-        await signup(email, password);
-        // TODO: Also create instance in db.
+        await signup(email, password, data.company_name);
       } catch (error) {
         alert("Failed");
         console.error("Error during signup", error.message);

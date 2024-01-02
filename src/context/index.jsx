@@ -107,13 +107,41 @@ export const AuthProvider = ({ children }) => {
     setUser(userCredential.user);
   };
 
-  const signup = async (email, password) => {
+  const signup = async (email, password, company) => {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
     setUser(userCredential.user);
+
+    var formdata = new FormData();
+    formdata.append("uid", userCredential.user.uid);
+    formdata.append("email", email);
+    formdata.append("password", password);
+    formdata.append("company", company);
+
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+      redirect: "follow",
+    };
+
+    let token = localStorage.getItem("user_token");
+
+    fetch(
+      "http://127.0.0.1:105/controller/user/create?token=" + token,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        return result;
+      })
+      .catch((error) => {
+        console.log("error", error);
+        return error;
+      });
   };
 
   const logout = async () => {
