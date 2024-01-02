@@ -84,8 +84,9 @@ export const setFixedNavbar = (dispatch, value) =>
 export const setOpenConfigurator = (dispatch, value) =>
   dispatch({ type: "OPEN_CONFIGURATOR", value });
 
+// ***********************************
 import { createContext, useState, useEffect, useContext } from "react";
-import { auth } from "@/service/firebase";
+import { auth } from "@/services/firebase";
 
 import {
   createUserWithEmailAndPassword,
@@ -97,6 +98,8 @@ import {
 const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [identityToken, setToken] = useState("");
 
   const login = async (email, password) => {
     const userCredential = await signInWithEmailAndPassword(
@@ -127,10 +130,8 @@ export const AuthProvider = ({ children }) => {
       redirect: "follow",
     };
 
-    let token = localStorage.getItem("user_token");
-
     fetch(
-      "http://127.0.0.1:105/controller/user/create?token=" + token,
+      "http://127.0.0.1:105/controller/user/create?token=" + identityToken,
       requestOptions
     )
       .then((response) => response.json())
@@ -149,12 +150,45 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const [loading, setLoading] = useState(true);
+  function getTokenFromBackend(uid) {
+    /*
+      Gets token from backend based on uid.
+    */
+    const apiUrl = "http://127.0.0.1:105/controller/login_success";
+    const data = { uid: uid };
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    };
+
+    fetch(apiUrl, requestOptions)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setToken(data.token);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
+  useEffect(() => {
+    if (identityToken !== "") {
+      localStorage.setItem("user_token", identityToken);
+      console.log("User token: " + identityToken);
+    }
+  }, [identityToken]);
 
   // Listen to the Firebase Auth state and set the user
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
+        getTokenFromBackend(user.uid);
         setUser(user);
         setLoading(false); // Set loading to false once the user is fetched
       } else {
@@ -167,10 +201,13 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, loading }}>
+    <AuthContext.Provider
+      value={{ user, login, signup, logout, loading, identityToken }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
 export const useAuth = () => useContext(AuthContext);
+// ***********************************

@@ -6,47 +6,6 @@ import { useState, useEffect } from "react";
 
 function App() {
   const { user, loading } = useAuth();
-  const [token, setToken] = useState("");
-
-  function getTokenFromBackend(uid) {
-    /*
-      Gets token from backend based on uid.
-    */
-    const apiUrl = "http://127.0.0.1:105/controller/login_success";
-    const data = { uid: uid };
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    };
-
-    fetch(apiUrl, requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setToken(data.token);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }
-
-  useEffect(() => {
-    if (user) {
-      getTokenFromBackend(user.uid);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (token !== "") {
-      localStorage.setItem("user_token", token);
-      // console.log("User token: " + token);
-    }
-  }, [token]);
 
   if (loading) {
     return (

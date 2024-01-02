@@ -129,3 +129,55 @@ export const statisticsChartsData = [
 ];
 
 export default statisticsChartsData;
+
+// import { useState, useEffect } from "react";
+// import { fetchChartData } from "@/services/"; // Replace with your actual data fetching service
+// import { chartsConfig } from "@/configs";
+// import { fetchUser } from "@/services/user";
+
+// const useStatisticsChartsData = () => {
+//   const [statisticsChartsData, setStatisticsChartsData] = useState([]);
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const chartData = await fetchUser(); // Fetch or calculate your chart data
+//         const updatedStatisticsChartsData = [
+//           {
+//             color: "white",
+//             title: "Your tests this week",
+//             description: "Total scenarios you have run this month",
+//             footer: "updated 2 days ago",
+//             chart: {
+//               ...websiteViewsChart,
+//               series: [{ name: "Tests", data: chartData.testsData }],
+//             },
+//           },
+//           {
+//             color: "white",
+//             title: "Your success rate this week",
+//             description: "Succeeded tests / Total tests",
+//             footer: "updated 4 min ago",
+//             chart: {
+//               ...dailySalesChart,
+//               series: [
+//                 { name: "Success Rate", data: chartData.successRateData },
+//               ],
+//             },
+//           },
+//           // Add more chart data here...
+//         ];
+
+//         setStatisticsChartsData(updatedStatisticsChartsData);
+//       } catch (error) {
+//         console.error("Error fetching chart data:", error);
+//       }
+//     };
+
+//     fetchData();
+//   }, []); // Dependency array is empty, so this runs once on mount
+
+//   return statisticsChartsData;
+// };
+
+// export default useStatisticsChartsData;

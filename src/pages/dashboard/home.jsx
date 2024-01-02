@@ -1,5 +1,11 @@
 import React from "react";
 import {
+  ChartBarIcon,
+  BuildingOfficeIcon,
+  BugAntIcon,
+  UserIcon,
+} from "@heroicons/react/24/solid";
+import {
   Typography,
   Card,
   CardHeader,
@@ -17,20 +23,21 @@ import { EllipsisVerticalIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
 import { StatisticsCard } from "@/widgets/cards";
 import { StatisticsChart } from "@/widgets/charts";
 import {
-  statisticsCardsData,
   statisticsChartsData,
   projectsTableData,
-  ordersOverviewData,
   testsTableData,
 } from "@/data";
 import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
+import useTopCardItems from "@/data/statistics-cards-data";
 
 export function Home() {
+  const topCardItems = useTopCardItems();
+
   return (
     // top 4 money cards components
     <div className="mt-12">
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
-        {statisticsCardsData.map(({ icon, title, footer, ...rest }) => (
+        {topCardItems.map(({ icon, title, footer, ...rest }) => (
           <StatisticsCard
             key={title}
             {...rest}
@@ -46,6 +53,20 @@ export function Home() {
             }
           />
         ))}
+        {/* <StatisticsCard
+          key={"Company's Usage"}
+          // {...rest}
+          title={"Company's Usage"}
+          icon={React.createElement(BuildingOfficeIcon, {
+            className: "w-6 h-6 text-white",
+          })}
+          footer={
+            <Typography className="font-normal text-blue-gray-600">
+              <strong className={"text-green-500"}>{"Tier 1"}</strong>
+              &nbsp;{"calculated wrt. total usage"}
+            </Typography>
+          }
+        /> */}
       </div>
       {/* chart components */}
       <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-2">
