@@ -5,31 +5,33 @@ import {
   CardFooter,
   Avatar,
   Typography,
-  Tabs,
-  TabsHeader,
-  Tab,
-  Switch,
+  // Tabs,
+  // TabsHeader,
+  // Tab,
+  // Switch,
   Tooltip,
   Button,
 } from "@material-tailwind/react";
 import {
-  HomeIcon,
-  ChatBubbleLeftEllipsisIcon,
-  Cog6ToothIcon,
+  // HomeIcon,
+  // ChatBubbleLeftEllipsisIcon,
+  // Cog6ToothIcon,
   PencilIcon,
 } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import { ProfileInfoCard, MessageCard } from "@/widgets/cards";
+import useProjectsData from "@/data/projects-table-data";
 import {
-  platformSettingsData,
+  // platformSettingsData,
   conversationsData,
-  projectsData,
-  projectsTableData,
+  // projectsData,
+  // projectsTableData,
 } from "@/data";
 import { useState } from "react";
 
 export function Profile() {
   const [conversations, setConversations] = useState(conversationsData);
+  const projectsTableData = useProjectsData();
 
   const handleRemoveConversation = (name) => {
     const updatedConversations = conversations.filter(

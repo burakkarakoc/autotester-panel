@@ -10,9 +10,18 @@ import {
   Button,
 } from "@material-tailwind/react";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
-import { authorsTableData, projectsTableData, testsTableData } from "@/data";
+import {
+  authorsTableData,
+  // projectsTableData,
+  // testsTableData,
+} from "@/data";
+import useProjectsData from "@/data/projects-table-data";
+import useTestsData from "@/data/mock-test-runs-data";
 
 export function Tables() {
+  const projectsTableData = useProjectsData();
+  const testsData = useTestsData();
+
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
@@ -154,9 +163,9 @@ export function Tables() {
               </tr>
             </thead>
             <tbody>
-              {testsTableData.map(({ testId, status }, key) => {
+              {testsData.map(({ testId, status }, key) => {
                 const className = `py-3 px-5 ${
-                  key === testsTableData.length - 1
+                  key === testsData.length - 1
                     ? ""
                     : "border-b border-blue-gray-50"
                 }`;

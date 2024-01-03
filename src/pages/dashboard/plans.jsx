@@ -11,9 +11,12 @@ import {
   Button,
 } from "@material-tailwind/react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
-import { projectsTableData } from "@/data";
+// import { projectsTableData } from "@/data";
+import useProjectsData from "@/data/projects-table-data";
 
 export function Plans() {
+  const projectsTableData = useProjectsData();
+
   // const [showAlerts, setShowAlerts] = React.useState({
   //   blue: true,
   //   green: true,

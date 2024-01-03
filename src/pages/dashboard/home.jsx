@@ -18,20 +18,157 @@ import {
   Avatar,
   Tooltip,
   Progress,
+  Button,
 } from "@material-tailwind/react";
 import { EllipsisVerticalIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
 import { StatisticsCard } from "@/widgets/cards";
 import { StatisticsChart } from "@/widgets/charts";
 import {
   statisticsChartsData,
-  projectsTableData,
-  testsTableData,
+  // projectsTableData,
 } from "@/data";
 import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
 import useTopCardItems from "@/data/statistics-cards-data";
+import useProjectsData from "@/data/projects-table-data";
+import useTestsData from "@/data/mock-test-runs-data";
+import { useState, useEffect } from "react";
+import {
+  fetchHtmlContent,
+  fetchProjectTests,
+  fetchTestData,
+} from "@/services/fetchSingleTest";
+import { useRef } from "react";
 
 export function Home() {
   const topCardItems = useTopCardItems();
+  const projectsTableData = useProjectsData();
+  const testsData = useTestsData();
+
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [selectedTest, setSelectedTest] = useState(null);
+  const [activeTab, setActiveTab] = useState("report");
+  const [projectTests, setProjectData] = useState(null);
+
+  const handleProjectRowClick = async (projectId) => {
+    try {
+      const project = await fetchProjectTests(projectId); // Replace with actual API call
+      setProjectData(project.data);
+    } catch (error) {
+      console.error("Error fetching project tests:", error);
+    }
+  };
+
+  const handleRowClick = async (testId) => {
+    try {
+      const detailedTestData = await fetchTestData(testId);
+      setSelectedTest(detailedTestData);
+      setPopupVisible(true);
+    } catch (error) {
+      // Handle the error, such as showing an alert or a message to the user
+      console.error("Failed to fetch test details:", error);
+    }
+  };
+
+  const closePopup = () => {
+    setPopupVisible(false);
+    setSelectedTest(null);
+  };
+
+  const PopupComponent = ({ test, activeTab, setActiveTab, onClose }) => {
+    test = test.data;
+
+    const [blobUrl, setBlobUrl] = useState("");
+    const fetchedRef = useRef(false); // Ref to indicate if the content has been fetched
+
+    useEffect(() => {
+      // Function to load HTML content
+      const loadHtmlContent = async () => {
+        if (test.html && !fetchedRef.current) {
+          fetchedRef.current = true; // Set the flag to indicate fetching
+          try {
+            const htmlContent = await fetchHtmlContent(test.html);
+            const blob = new Blob([htmlContent], { type: "text/html" });
+            const objectURL = URL.createObjectURL(blob);
+            setBlobUrl(objectURL);
+          } catch (error) {
+            console.error("Error fetching HTML:", error);
+            // Handle the error
+          }
+        }
+      };
+
+      if (activeTab === "report") {
+        loadHtmlContent();
+      }
+
+      // Cleanup function
+      return () => {
+        if (blobUrl) {
+          URL.revokeObjectURL(blobUrl);
+          setBlobUrl(""); // Clear the blob URL
+        }
+        fetchedRef.current = false; // Reset the flag when the component unmounts or tab changes
+      };
+    }, [test.html, activeTab]);
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-30 z-50 flex justify-center items-center">
+        <div className="bg-white border border-blue-gray-100 shadow-lg rounded-lg p-6 max-w-md w-full">
+          <div className="tabs flex justify-around mb-4">
+            <button
+              className={`py-2 px-4 rounded ${
+                activeTab === "report"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200"
+              }`}
+              onClick={() => setActiveTab("report")}
+            >
+              Report
+            </button>
+            <button
+              className={`py-2 px-4 rounded ${
+                activeTab === "video" ? "bg-blue-500 text-white" : "bg-gray-200"
+              }`}
+              onClick={() => setActiveTab("video")}
+            >
+              Video
+            </button>
+          </div>
+          <div className="content mb-4">
+            {activeTab === "report" &&
+              (test.html && blobUrl ? (
+                <iframe
+                  src={blobUrl}
+                  style={{ width: "100%", height: "500px" }}
+                  title="File Content"
+                ></iframe>
+              ) : (
+                "No report available."
+              ))}
+            {activeTab === "video" && (
+              <div>
+                {test.video ? (
+                  <video
+                    src={test.video}
+                    controls
+                    style={{ maxWidth: "100%" }}
+                  />
+                ) : (
+                  "No video available."
+                )}
+              </div>
+            )}
+          </div>
+          <button
+            className="py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600"
+            onClick={onClose}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   return (
     // top 4 money cards components
@@ -53,20 +190,6 @@ export function Home() {
             }
           />
         ))}
-        {/* <StatisticsCard
-          key={"Company's Usage"}
-          // {...rest}
-          title={"Company's Usage"}
-          icon={React.createElement(BuildingOfficeIcon, {
-            className: "w-6 h-6 text-white",
-          })}
-          footer={
-            <Typography className="font-normal text-blue-gray-600">
-              <strong className={"text-green-500"}>{"Tier 1"}</strong>
-              &nbsp;{"calculated wrt. total usage"}
-            </Typography>
-          }
-        /> */}
       </div>
       {/* chart components */}
       <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-2">
@@ -114,6 +237,7 @@ export function Home() {
                 projects
               </Typography>
             </div>
+            {/* Maybe create project comes here */}
             {/* <Menu placement="left-start">
               <MenuHandler>
                 <IconButton size="sm" variant="text" color="blue-gray">
@@ -138,86 +262,132 @@ export function Home() {
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
-                  {["Project", "Members", "Total", "Completion"].map((el) => (
-                    <th
-                      key={el}
-                      className="border-b border-blue-gray-50 py-3 px-6 text-left"
-                    >
-                      <Typography
-                        variant="small"
-                        className="text-[11px] font-medium uppercase text-blue-gray-400"
+                  {["Project", "Members", "Total", "Completion", ""].map(
+                    (el) => (
+                      <th
+                        key={el}
+                        className="border-b border-blue-gray-50 py-3 px-6 text-left"
                       >
-                        {el}
-                      </Typography>
-                    </th>
-                  ))}
+                        <Typography
+                          variant="small"
+                          className="text-[11px] font-medium uppercase text-blue-gray-400"
+                        >
+                          {el}
+                        </Typography>
+                      </th>
+                    )
+                  )}
                 </tr>
               </thead>
               <tbody>
-                {projectsTableData.map(
-                  ({ img, projectName, members, total, completion }, key) => {
-                    const className = `py-3 px-5 ${
-                      key === projectsTableData.length - 1
-                        ? ""
-                        : "border-b border-blue-gray-50"
-                    }`;
-
-                    return (
-                      <tr key={projectName}>
-                        <td className={className}>
-                          <div className="flex items-center gap-4">
-                            <Avatar src={img} alt={projectName} size="sm" />
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-bold"
-                            >
-                              {projectName}
-                            </Typography>
-                          </div>
-                        </td>
-                        <td className={className}>
-                          {members.map(({ img, name }, key) => (
-                            <Tooltip key={name} content={name}>
-                              <Avatar
-                                src={img}
-                                alt={name}
-                                size="xs"
-                                variant="circular"
-                                className={`cursor-pointer border-2 border-white ${
-                                  key === 0 ? "" : "-ml-2.5"
-                                }`}
-                              />
-                            </Tooltip>
+                {projectTests ? (
+                  <Card className="border border-blue-gray-100 shadow-sm">
+                    <CardHeader
+                      floated={false}
+                      shadow={false}
+                      color="transparent"
+                      className="m-0 p-6"
+                    >
+                      <Typography
+                        variant="h6"
+                        color="blue-gray"
+                        className="mb-2"
+                      >
+                        Tests for {projectTests.projectName}
+                      </Typography>
+                      {/* ... additional header content ... */}
+                    </CardHeader>
+                    <CardBody
+                      className="pt-0 pb-2"
+                      style={{ height: "500px", overflowY: "auto" }}
+                    >
+                      <table className="w-full min-w-[320px] table-auto">
+                        {/* ... table headers ... */}
+                        <tbody>
+                          {projectTests.runs.map(({ testId, status }, key) => (
+                            <tr key={testId}>
+                              <td>{testId}</td>
+                              <td>{status}</td>
+                              {/* ... additional cells for test data ... */}
+                            </tr>
                           ))}
-                        </td>
-                        <td className={className}>
-                          <Typography
-                            variant="small"
-                            className="text-xs font-medium text-blue-gray-600"
-                          >
-                            {total}
-                          </Typography>
-                        </td>
-                        <td className={className}>
-                          <div className="w-10/12">
+                        </tbody>
+                      </table>
+                    </CardBody>
+                  </Card>
+                ) : (
+                  projectsTableData.map(
+                    ({ img, projectName, members, total, completion }, key) => {
+                      const className = `py-3 px-5 ${
+                        key === projectsTableData.length - 1
+                          ? ""
+                          : "border-b border-blue-gray-50"
+                      }`;
+
+                      return (
+                        <tr key={projectName}>
+                          <td className={className}>
+                            <div className="flex items-center gap-4">
+                              <Avatar src={img} alt={projectName} size="sm" />
+                              <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-bold"
+                              >
+                                {projectName}
+                              </Typography>
+                            </div>
+                          </td>
+                          <td className={className}>
+                            {members.map(({ img, name }, key) => (
+                              <Tooltip key={name} content={name}>
+                                <Avatar
+                                  src={img}
+                                  alt={name}
+                                  size="xs"
+                                  variant="circular"
+                                  className={`cursor-pointer border-2 border-white ${
+                                    key === 0 ? "" : "-ml-2.5"
+                                  }`}
+                                />
+                              </Tooltip>
+                            ))}
+                          </td>
+                          <td className={className}>
                             <Typography
                               variant="small"
-                              className="mb-1 block text-xs font-medium text-blue-gray-600"
+                              className="text-xs font-medium text-blue-gray-600"
                             >
-                              {completion}%
+                              {total}
                             </Typography>
-                            <Progress
-                              value={completion}
-                              variant="gradient"
-                              color={completion === 100 ? "green" : "blue"}
-                              className="h-1"
-                            />
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  }
+                          </td>
+                          <td className={className}>
+                            <div className="w-10/12">
+                              <Typography
+                                variant="small"
+                                className="mb-1 block text-xs font-medium text-blue-gray-600"
+                              >
+                                {completion}%
+                              </Typography>
+                              <Progress
+                                value={completion}
+                                variant="gradient"
+                                color={completion === 100 ? "green" : "blue"}
+                                className="h-1"
+                              />
+                            </div>
+                          </td>
+                          <td className={className}>
+                            <Button
+                              onClick={() => handleProjectRowClick(projectName)}
+                            >
+                              View
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    }
+                  )
                 )}
               </tbody>
             </table>
@@ -256,7 +426,7 @@ export function Home() {
               {/* min-w-[640px] */}
               <thead>
                 <tr>
-                  {["TestId", "Status"].map((el) => (
+                  {["TestId", "Status", "Report"].map((el) => (
                     <th
                       key={el}
                       className="border-b border-blue-gray-50 py-3 px-6 text-left"
@@ -272,7 +442,7 @@ export function Home() {
                 </tr>
               </thead>
               <tbody>
-                {testsTableData.map(({ testId, status }, key) => {
+                {testsData.map(({ testId, status }, key) => {
                   const className = `py-3 px-5 ${
                     key === projectsTableData.length - 1
                       ? ""
@@ -302,45 +472,26 @@ export function Home() {
                           {status}
                         </Typography>
                       </td>
+                      <td className={className}>
+                        <Typography className="text-xs font-semibold text-blue-gray-600">
+                          <Button onClick={() => handleRowClick(testId)}>
+                            Report & Video
+                          </Button>
+                        </Typography>
+                      </td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
-
-            {/* {ordersOverviewData.map(
-              ({ icon, color, title, description }, key) => (
-                <div key={title} className="flex items-start gap-4 py-3">
-                  <div
-                    className={`relative p-1 after:absolute after:-bottom-6 after:left-2/4 after:w-0.5 after:-translate-x-2/4 after:bg-blue-gray-50 after:content-[''] ${
-                      key === ordersOverviewData.length - 1
-                        ? "after:h-0"
-                        : "after:h-4/6"
-                    }`}
-                  >
-                    {React.createElement(icon, {
-                      className: `!w-5 !h-5 ${color}`,
-                    })}
-                  </div>
-                  <div>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="block font-medium"
-                    >
-                      {title}
-                    </Typography>
-                    <Typography
-                      as="span"
-                      variant="small"
-                      className="text-xs font-medium text-blue-gray-500"
-                    >
-                      {description}
-                    </Typography>
-                  </div>
-                </div>
-              )
-            )} */}
+            {isPopupVisible && (
+              <PopupComponent
+                test={selectedTest}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                onClose={closePopup}
+              />
+            )}
           </CardBody>
         </Card>
       </div>

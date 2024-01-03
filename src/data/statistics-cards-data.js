@@ -29,6 +29,7 @@ import {
   BugAntIcon,
   UserIcon,
 } from "@heroicons/react/24/solid";
+import { fetchUser } from "@/services/user";
 
 const useTopCardItems = () => {
   const { user } = useAuth();
@@ -40,6 +41,17 @@ const useTopCardItems = () => {
         const uid = user.uid;
         try {
           const companyData = await fetchCompany(uid);
+          const userData = await fetchUser(uid);
+          let totalRunCount = 0;
+
+          for (let project in companyData.data.projects) {
+            if (Array.isArray(companyData.data.projects[project])) {
+              totalRunCount += companyData.data.projects[project].length;
+            }
+          }
+
+          // console.log(totalRunCount);
+          // console.log(companyData.data.projects);
           // console.log(companyData);
           const items = [
             new TopCardItem(
@@ -54,11 +66,8 @@ const useTopCardItems = () => {
             new TopCardItem(
               "gray",
               ChartBarIcon,
-              "Company's (" +
-                companyData.data.company_name +
-                ") " +
-                "Scenario Count",
-              "2,300",
+              companyData.data.company_name + "'s " + "Scenario Count",
+              totalRunCount,
               "text-green-500",
               "+3%",
               "than last month"
@@ -67,7 +76,7 @@ const useTopCardItems = () => {
               "gray",
               UserIcon,
               "Your Screnario Count",
-              "152",
+              Object.keys(userData.data.runs).length,
               "text-red-500",
               "-2%",
               "than yesterday"
@@ -76,8 +85,7 @@ const useTopCardItems = () => {
               "gray",
               BugAntIcon,
               "Assigned to you",
-              "12",
-
+              userData.data.assigned_tasks.length,
               "text-green-500",
               "",
               "Tests that assigned to you"
