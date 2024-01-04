@@ -1,33 +1,34 @@
 import React from "react";
+// import {
+//   ChartBarIcon,
+//   BuildingOfficeIcon,
+//   BugAntIcon,
+//   UserIcon,
+// } from "@heroicons/react/24/solid";
 import {
-  ChartBarIcon,
-  BuildingOfficeIcon,
-  BugAntIcon,
-  UserIcon,
-} from "@heroicons/react/24/solid";
-import {
+  // IconButton,
+  // Menu,
+  // MenuHandler,
+  // MenuList,
+  // MenuItem,
   Typography,
   Card,
   CardHeader,
   CardBody,
-  IconButton,
-  Menu,
-  MenuHandler,
-  MenuList,
-  MenuItem,
   Avatar,
   Tooltip,
   Progress,
   Button,
 } from "@material-tailwind/react";
-import { EllipsisVerticalIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
+// import { EllipsisVerticalIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
 import { StatisticsCard } from "@/widgets/cards";
 import { StatisticsChart } from "@/widgets/charts";
+import { statisticsChartsData } from "@/data";
 import {
-  statisticsChartsData,
-  // projectsTableData,
-} from "@/data";
-import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
+  CheckCircleIcon,
+  ClockIcon,
+  BackspaceIcon,
+} from "@heroicons/react/24/solid";
 import useTopCardItems from "@/data/statistics-cards-data";
 import useProjectsData from "@/data/projects-table-data";
 import useTestsData from "@/data/mock-test-runs-data";
@@ -35,8 +36,8 @@ import { useState, useEffect } from "react";
 import {
   fetchHtmlContent,
   fetchProjectTests,
-  fetchTestData,
-} from "@/services/fetchSingleTest";
+  // fetchTestData,
+} from "@/services/test";
 import { useRef } from "react";
 
 export function Home() {
@@ -48,23 +49,33 @@ export function Home() {
   const [selectedTest, setSelectedTest] = useState(null);
   const [activeTab, setActiveTab] = useState("report");
   const [projectTests, setProjectData] = useState(null);
+  const [runsOfProject, setRuns] = useState(null);
 
   const handleProjectRowClick = async (projectId) => {
     try {
       const project = await fetchProjectTests(projectId); // Replace with actual API call
-      setProjectData(project.data);
+      setProjectData(project.project.data);
+      setRuns(project.runs);
     } catch (error) {
       console.error("Error fetching project tests:", error);
     }
   };
 
+  const getSelectedTest = (test_id) => {
+    for (var i = 0; i < testsData.length; i++) {
+      if (testsData[i].id == test_id) {
+        return testsData[i];
+      }
+    }
+    return -1;
+  };
+
   const handleRowClick = async (testId) => {
     try {
-      const detailedTestData = await fetchTestData(testId);
+      const detailedTestData = getSelectedTest(testId);
       setSelectedTest(detailedTestData);
       setPopupVisible(true);
     } catch (error) {
-      // Handle the error, such as showing an alert or a message to the user
       console.error("Failed to fetch test details:", error);
     }
   };
@@ -75,13 +86,10 @@ export function Home() {
   };
 
   const PopupComponent = ({ test, activeTab, setActiveTab, onClose }) => {
-    test = test.data;
-
     const [blobUrl, setBlobUrl] = useState("");
     const fetchedRef = useRef(false); // Ref to indicate if the content has been fetched
 
     useEffect(() => {
-      // Function to load HTML content
       const loadHtmlContent = async () => {
         if (test.html && !fetchedRef.current) {
           fetchedRef.current = true; // Set the flag to indicate fetching
@@ -142,6 +150,8 @@ export function Home() {
                   style={{ width: "100%", height: "500px" }}
                   title="File Content"
                 ></iframe>
+              ) : test.html ? (
+                "Loading..."
               ) : (
                 "No report available."
               ))}
@@ -171,7 +181,6 @@ export function Home() {
   };
 
   return (
-    // top 4 money cards components
     <div className="mt-12">
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
         {topCardItems.map(({ icon, title, footer, ...rest }) => (
@@ -222,20 +231,53 @@ export function Home() {
             className="m-0 flex items-center justify-between p-6"
           >
             <div>
-              <Typography variant="h6" color="blue-gray" className="mb-1">
-                Projects
-              </Typography>
-              <Typography
-                variant="small"
-                className="flex items-center gap-1 font-normal text-blue-gray-600"
-              >
-                <CheckCircleIcon
-                  strokeWidth={3}
-                  className="h-4 w-4 text-blue-gray-200"
-                />
-                You have <strong>{projectsTableData.length}</strong> automation
-                projects
-              </Typography>
+              {projectTests == null ? (
+                <>
+                  <Typography variant="h6" color="blue-gray" className="mb-1">
+                    Projects
+                  </Typography>
+                  <Typography
+                    variant="small"
+                    className="flex items-center gap-1 font-normal text-blue-gray-600"
+                  >
+                    <CheckCircleIcon
+                      strokeWidth={3}
+                      className="h-4 w-4 text-blue-gray-200"
+                    />
+                    You have <strong>{projectsTableData.length}</strong>{" "}
+                    automation projects
+                  </Typography>
+                </>
+              ) : (
+                <>
+                  <Typography variant="h6" color="blue-gray" className="mb-1">
+                    <Button
+                      onClick={() => {
+                        setProjectData(null);
+                        setRuns(null);
+                      }}
+                    >
+                      <BackspaceIcon
+                        // strokeWidth={3}
+                        className="h-4 w-4"
+                      />
+                    </Button>
+                    <br />
+                    {/* Runs of {projectTests.projectName} */}
+                  </Typography>
+                  <Typography
+                    variant="small"
+                    className="flex items-center gap-1 font-normal text-blue-gray-600"
+                  >
+                    <CheckCircleIcon
+                      strokeWidth={3}
+                      className="h-4 w-4 text-blue-gray-200"
+                    />
+                    You have <strong>{projectTests.runs.length}</strong> runs in
+                    <strong>{projectTests.projectName}</strong>.
+                  </Typography>
+                </>
+              )}
             </div>
             {/* Maybe create project comes here */}
             {/* <Menu placement="left-start">
@@ -262,62 +304,40 @@ export function Home() {
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
-                  {["Project", "Members", "Total", "Completion", ""].map(
-                    (el) => (
-                      <th
-                        key={el}
-                        className="border-b border-blue-gray-50 py-3 px-6 text-left"
-                      >
-                        <Typography
-                          variant="small"
-                          className="text-[11px] font-medium uppercase text-blue-gray-400"
+                  {runsOfProject
+                    ? ["TestId", "Status", "Report"].map((el) => (
+                        <th
+                          key={el}
+                          className="border-b border-blue-gray-50 py-3 px-6 text-left"
                         >
-                          {el}
-                        </Typography>
-                      </th>
-                    )
-                  )}
+                          <Typography
+                            variant="small"
+                            className="text-[11px] font-medium uppercase text-blue-gray-400"
+                          >
+                            {el}
+                          </Typography>
+                        </th>
+                      ))
+                    : ["Project", "Members", "Total", "Completion", ""].map(
+                        (el) => (
+                          <th
+                            key={el}
+                            className="border-b border-blue-gray-50 py-3 px-6 text-left"
+                          >
+                            <Typography
+                              variant="small"
+                              className="text-[11px] font-medium uppercase text-blue-gray-400"
+                            >
+                              {el}
+                            </Typography>
+                          </th>
+                        )
+                      )}
                 </tr>
               </thead>
               <tbody>
-                {projectTests ? (
-                  <Card className="border border-blue-gray-100 shadow-sm">
-                    <CardHeader
-                      floated={false}
-                      shadow={false}
-                      color="transparent"
-                      className="m-0 p-6"
-                    >
-                      <Typography
-                        variant="h6"
-                        color="blue-gray"
-                        className="mb-2"
-                      >
-                        Tests for {projectTests.projectName}
-                      </Typography>
-                      {/* ... additional header content ... */}
-                    </CardHeader>
-                    <CardBody
-                      className="pt-0 pb-2"
-                      style={{ height: "500px", overflowY: "auto" }}
-                    >
-                      <table className="w-full min-w-[320px] table-auto">
-                        {/* ... table headers ... */}
-                        <tbody>
-                          {projectTests.runs.map(({ testId, status }, key) => (
-                            <tr key={testId}>
-                              <td>{testId}</td>
-                              <td>{status}</td>
-                              {/* ... additional cells for test data ... */}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </CardBody>
-                  </Card>
-                ) : (
-                  projectsTableData.map(
-                    ({ img, projectName, members, total, completion }, key) => {
+                {projectTests
+                  ? runsOfProject.map(({ id, status }, key) => {
                       const className = `py-3 px-5 ${
                         key === projectsTableData.length - 1
                           ? ""
@@ -325,76 +345,120 @@ export function Home() {
                       }`;
 
                       return (
-                        <tr key={projectName}>
+                        <tr key={id}>
                           <td className={className}>
                             <div className="flex items-center gap-4">
-                              <Avatar src={img} alt={projectName} size="sm" />
+                              {/* <Avatar src={img} alt={projectName} size="sm" /> */}
                               <Typography
                                 variant="small"
                                 color="blue-gray"
                                 className="font-bold"
                               >
-                                {projectName}
+                                {id}
                               </Typography>
                             </div>
                           </td>
-                          <td className={className}>
-                            {members.map(({ img, name }, key) => (
-                              <Tooltip key={name} content={name}>
-                                <Avatar
-                                  src={img}
-                                  alt={name}
-                                  size="xs"
-                                  variant="circular"
-                                  className={`cursor-pointer border-2 border-white ${
-                                    key === 0 ? "" : "-ml-2.5"
-                                  }`}
-                                />
-                              </Tooltip>
-                            ))}
-                          </td>
+
                           <td className={className}>
                             <Typography
                               variant="small"
                               className="text-xs font-medium text-blue-gray-600"
                             >
-                              {total}
+                              {status == 1 ? "Success" : "Failed"}
                             </Typography>
                           </td>
                           <td className={className}>
-                            <div className="w-10/12">
-                              <Typography
-                                variant="small"
-                                className="mb-1 block text-xs font-medium text-blue-gray-600"
-                              >
-                                {completion}%
-                              </Typography>
-                              <Progress
-                                value={completion}
-                                variant="gradient"
-                                color={completion === 100 ? "green" : "blue"}
-                                className="h-1"
-                              />
-                            </div>
-                          </td>
-                          <td className={className}>
-                            <Button
-                              onClick={() => handleProjectRowClick(projectName)}
-                            >
-                              View
-                            </Button>
+                            <Typography className="text-xs font-semibold text-blue-gray-600">
+                              <Button onClick={() => handleRowClick(id)}>
+                                Report & Video
+                              </Button>
+                            </Typography>
                           </td>
                         </tr>
                       );
-                    }
-                  )
-                )}
+                    })
+                  : projectsTableData.map(
+                      (
+                        { img, projectName, members, total, completion },
+                        key
+                      ) => {
+                        const className = `py-3 px-5 ${
+                          key === projectsTableData.length - 1
+                            ? ""
+                            : "border-b border-blue-gray-50"
+                        }`;
+
+                        return (
+                          <tr key={projectName}>
+                            <td className={className}>
+                              <div className="flex items-center gap-4">
+                                <Avatar src={img} alt={projectName} size="sm" />
+                                <Typography
+                                  variant="small"
+                                  color="blue-gray"
+                                  className="font-bold"
+                                >
+                                  {projectName}
+                                </Typography>
+                              </div>
+                            </td>
+                            <td className={className}>
+                              {members.map(({ img, name }, key) => (
+                                <Tooltip key={name} content={name}>
+                                  <Avatar
+                                    src={img}
+                                    alt={name}
+                                    size="xs"
+                                    variant="circular"
+                                    className={`cursor-pointer border-2 border-white ${
+                                      key === 0 ? "" : "-ml-2.5"
+                                    }`}
+                                  />
+                                </Tooltip>
+                              ))}
+                            </td>
+                            <td className={className}>
+                              <Typography
+                                variant="small"
+                                className="text-xs font-medium text-blue-gray-600"
+                              >
+                                {total}
+                              </Typography>
+                            </td>
+                            <td className={className}>
+                              <div className="w-10/12">
+                                <Typography
+                                  variant="small"
+                                  className="mb-1 block text-xs font-medium text-blue-gray-600"
+                                >
+                                  {completion}%
+                                </Typography>
+                                <Progress
+                                  value={completion}
+                                  variant="gradient"
+                                  color={completion === 100 ? "green" : "blue"}
+                                  className="h-1"
+                                />
+                              </div>
+                            </td>
+                            <td className={className}>
+                              <Button
+                                onClick={() =>
+                                  handleProjectRowClick(projectName)
+                                }
+                              >
+                                View
+                              </Button>
+                            </td>
+                          </tr>
+                        );
+                      }
+                    )}
               </tbody>
             </table>
           </CardBody>
         </Card>
-        {/* Orders card component in the bottom rigth */}
-
+        {/* Runs table component */}
         {/* <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-1"> */}
         <Card className="border border-blue-gray-100 shadow-sm">
           <CardHeader
@@ -442,15 +506,11 @@ export function Home() {
                 </tr>
               </thead>
               <tbody>
-                {testsData.map(({ testId, status }, key) => {
-                  const className = `py-3 px-5 ${
-                    key === projectsTableData.length - 1
-                      ? ""
-                      : "border-b border-blue-gray-50"
-                  }`;
+                {testsData.map(({ id, status }, key) => {
+                  const className = `py-3 px-5 ${"border-b border-blue-gray-50"}`;
 
                   return (
-                    <tr key={testId}>
+                    <tr key={id}>
                       <td className={className}>
                         <div className="flex items-center gap-4">
                           {/* <Avatar src={img} alt={projectName} size="sm" /> */}
@@ -459,7 +519,7 @@ export function Home() {
                             color="blue-gray"
                             className="font-bold"
                           >
-                            {testId}
+                            {id}
                           </Typography>
                         </div>
                       </td>
@@ -467,14 +527,14 @@ export function Home() {
                       <td className={className}>
                         <Typography
                           variant="small"
-                          className="text-xs font-medium text-blue-gray-600"
+                          className="ml-5 text-xs font-medium text-blue-gray-600"
                         >
-                          {status}
+                          {status == 1 ? "Success" : "Failed"}
                         </Typography>
                       </td>
                       <td className={className}>
                         <Typography className="text-xs font-semibold text-blue-gray-600">
-                          <Button onClick={() => handleRowClick(testId)}>
+                          <Button onClick={() => handleRowClick(id)}>
                             Report & Video
                           </Button>
                         </Typography>

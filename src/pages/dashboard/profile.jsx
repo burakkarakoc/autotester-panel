@@ -17,6 +17,7 @@ import {
   // ChatBubbleLeftEllipsisIcon,
   // Cog6ToothIcon,
   PencilIcon,
+  UserIcon,
 } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import { ProfileInfoCard, MessageCard } from "@/widgets/cards";
@@ -27,13 +28,35 @@ import {
   // projectsData,
   // projectsTableData,
 } from "@/data";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchUser } from "@/services/user";
+import { useAuth } from "@/context";
 
 export function Profile() {
   const [conversations, setConversations] = useState(conversationsData);
   const projectsTableData = useProjectsData();
+  const { user } = useAuth();
+  const [userData, setUserData] = useState(null);
+  const useUserData = () => {
+    useEffect(() => {
+      const getUserData = async () => {
+        if (user) {
+          const uid = user.uid;
+          const data = await fetchUser(uid);
+          console.log(data.data);
+          setUserData(data.data);
+        }
+      };
+      getUserData();
+    }, [user]);
+  };
+
+  useUserData();
 
   const handleRemoveConversation = (name) => {
+    // TODO: Messaging is not implemented by any means, namely those are only mock data...
+    // Currently it deletes from runtime, implement integration with db as well!
+    // maybe convert it to "assigned tasks to you"
     const updatedConversations = conversations.filter(
       (conversation) => conversation.name !== name
     );
@@ -49,27 +72,31 @@ export function Profile() {
       <Card className="mx-3 -mt-16 mb-6 lg:mx-4 border border-blue-gray-100">
         <CardBody className="p-4">
           <div className="mb-10 flex items-center justify-between flex-wrap gap-6">
-            <div className="flex items-center gap-6">
-              {/* profile avatar */}
-              <Avatar
-                src="/img/user.jpeg"
-                alt="burak-karakoc"
-                size="xl"
-                variant="rounded"
-                className="rounded-lg shadow-lg shadow-blue-gray-500/40"
-              />
-              <div>
-                <Typography variant="h5" color="blue-gray" className="mb-1">
-                  Burak Karakoc
-                </Typography>
-                <Typography
-                  variant="small"
-                  className="font-normal text-blue-gray-600"
-                >
-                  CEO / Co-Founder
-                </Typography>
+            {userData ? (
+              <div className="flex items-center gap-6">
+                {/* profile avatar */}
+                <Avatar
+                  src={userData.img}
+                  alt={userData.id}
+                  size="xl"
+                  variant="rounded"
+                  className="rounded-lg shadow-lg shadow-blue-gray-500/40"
+                />
+                <div>
+                  <Typography variant="h4" color="blue-gray" className="mb-1">
+                    ID: {userData.id}
+                  </Typography>
+                  <Typography
+                    variant="small"
+                    className="font-normal text-blue-gray-600"
+                  >
+                    Tester
+                  </Typography>
+                </div>
               </div>
-            </div>
+            ) : (
+              <></>
+            )}
             {/* 3 buttons as tabs */}
             {/* <div className="w-96">
               <Tabs value="message">
@@ -116,7 +143,8 @@ export function Profile() {
               </div>
             </div> */}
             {/* Profile info */}
-            <ProfileInfoCard
+
+            {/* <ProfileInfoCard
               title="Profile Information"
               description="Hi, I'm Alec Thompson, Decisions: If you can't decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
               details={{
@@ -126,7 +154,7 @@ export function Profile() {
                 location: "TR/DE",
                 links: (
                   <div className="flex items-center gap-4">
-                    {/* <i className="fa-brands fa-facebook text-blue-700" /> */}
+                    <i className="fa-brands fa-facebook text-blue-700" />
                     <a href="https://www.linkedin.com/in/burakkarakoc/">
                       <i className="fa-brands fa-linkedin text-blue-700" />
                     </a>
@@ -141,7 +169,7 @@ export function Profile() {
                   <PencilIcon className="h-4 w-4 cursor-pointer text-blue-gray-500" />
                 </Tooltip>
               }
-            />
+            /> */}
             {/* Test PRs */}
             <div>
               <Typography variant="h6" color="blue-gray" className="mb-3">

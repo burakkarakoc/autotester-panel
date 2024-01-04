@@ -50,9 +50,6 @@ const useTopCardItems = () => {
             }
           }
 
-          // console.log(totalRunCount);
-          // console.log(companyData.data.projects);
-          // console.log(companyData);
           const items = [
             new TopCardItem(
               "gray",

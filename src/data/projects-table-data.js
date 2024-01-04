@@ -6,6 +6,20 @@ const useProjectsData = () => {
   const { user } = useAuth();
   const [projectsData, setProjectsData] = useState([]);
 
+  const calculate_success_rate = (runs_array) => {
+    let total = 0;
+    let success_count = 0;
+    runs_array.forEach((element) => {
+      total++;
+      success_count += Object.values(element)[0];
+    });
+    if (total != 0) {
+      return (success_count / total) * 100;
+    } else {
+      return o;
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
@@ -13,14 +27,13 @@ const useProjectsData = () => {
         try {
           const companyData = await fetchProjects(uid);
           const projects = companyData.data.projects;
-          // console.log(projects);
           const processedProjects = Object.entries(projects).map(
             ([key, project]) => ({
               img: project.image_url, // TODO: this will be initials of user as image
               projectName: project.id,
               members: project.members,
               total: Object.keys(project.runs).length,
-              completion: project.success_percentage,
+              completion: calculate_success_rate(project.runs),
             })
           );
           setProjectsData(processedProjects);
