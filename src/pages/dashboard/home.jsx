@@ -123,8 +123,8 @@ export function Home() {
         ))}
       </div>
       {/* Project tab component */}
-      <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
-        <Card className="overflow-hidden xl:col-span-2 border border-blue-gray-100 shadow-sm">
+      <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-7">
+        <Card className="overflow-hidden xl:col-span-7 border border-blue-gray-100 shadow-sm">
           <CardHeader
             floated={false}
             shadow={false}
@@ -363,7 +363,11 @@ export function Home() {
         </Card>
         {/* Runs table component */}
         {/* <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-1"> */}
-        <Card className="border border-blue-gray-100 shadow-sm">
+        <Card
+          className="overflow-hidden xl:col-span-7 border border-blue-gray-100 shadow-sm"
+
+          // "border border-blue-gray-100 shadow-sm"
+        >
           <CardHeader
             floated={false}
             shadow={false}
@@ -430,7 +434,7 @@ export function Home() {
                       <td className={className}>
                         <Typography
                           variant="small"
-                          className="ml-5 text-xs font-medium text-blue-gray-600"
+                          className=" text-xs font-medium text-blue-gray-600"
                         >
                           {status == 1 ? "Success" : "Failed"}
                         </Typography>
@@ -438,7 +442,7 @@ export function Home() {
                       <td className={className}>
                         <Typography className="text-xs font-semibold text-blue-gray-600">
                           <Button onClick={() => handleRowClick(id)}>
-                            Report & Video
+                            Report
                           </Button>
                         </Typography>
                       </td>
