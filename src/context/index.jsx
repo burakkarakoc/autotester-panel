@@ -211,3 +211,56 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => useContext(AuthContext);
 // ***********************************
+
+import { fetchUser } from "@/services/user";
+import { fetchProjects } from "@/services/project";
+import { fetchCompany } from "@/services/company";
+
+export const AppContext = createContext();
+
+export const AppProvider = ({ children }) => {
+  const [userData, setUserData] = useState(null);
+  const [projectsData, setProjectsData] = useState(null);
+  const [companyData, setCompanyData] = useState(null);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const getUserData = async () => {
+      if (user) {
+        const usr = await fetchUser(user.uid);
+        // console.log(usr);
+        setUserData(usr);
+      } else {
+        // console.log("no user yet...");
+      }
+    };
+
+    const getProjectsData = async () => {
+      if (user) {
+        const projects = await fetchProjects(user.uid);
+        setProjectsData(projects);
+      } else {
+        // console.log("no user to fetch projects yet...");
+      }
+    };
+
+    const getCompany = async () => {
+      if (user) {
+        const company = await fetchCompany(user.uid);
+        setCompanyData(company);
+      } else {
+        // console.log("no user to fetch projects yet...");
+      }
+    };
+
+    getUserData();
+    getCompany();
+    getProjectsData();
+  }, [user]);
+
+  return (
+    <AppContext.Provider value={{ userData, projectsData, companyData }}>
+      {children}
+    </AppContext.Provider>
+  );
+};

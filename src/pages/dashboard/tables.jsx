@@ -163,7 +163,7 @@ export function Tables() {
               </tr>
             </thead>
             <tbody>
-              {testsData.map(({ testId, status }, key) => {
+              {testsData.map(({ id, status }, key) => {
                 const className = `py-3 px-5 ${
                   key === testsData.length - 1
                     ? ""
@@ -171,10 +171,10 @@ export function Tables() {
                 }`;
 
                 return (
-                  <tr key={testId}>
+                  <tr key={id}>
                     <td className={className}>
                       <Typography className="text-xs font-semibold text-blue-gray-600">
-                        {testId}
+                        {id}
                       </Typography>
                     </td>
                     <td className={className}>

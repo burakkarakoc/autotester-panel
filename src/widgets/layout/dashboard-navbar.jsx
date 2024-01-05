@@ -2,9 +2,9 @@ import { useLocation, Link } from "react-router-dom";
 import {
   Navbar,
   Typography,
-  Button,
+  // Button,
   IconButton,
-  Breadcrumbs,
+  // Breadcrumbs,
   Input,
   Menu,
   MenuHandler,
@@ -13,16 +13,17 @@ import {
   Avatar,
 } from "@material-tailwind/react";
 import {
-  UserCircleIcon,
+  // UserCircleIcon,
   Cog6ToothIcon,
   BellIcon,
   ClockIcon,
   CreditCardIcon,
   Bars3Icon,
+  XCircleIcon,
 } from "@heroicons/react/24/solid";
 import {
   useMaterialTailwindController,
-  setOpenConfigurator,
+  // setOpenConfigurator,
   setOpenSidenav,
 } from "@/context";
 
@@ -215,12 +216,13 @@ export function DashboardNavbar() {
                   color="blue-gray"
                   onClick={toggleSettingsDropdown}
                 >
+                  {/* <XCircleIcon className="h-5 w-5 text-blue-gray-500" /> */}
                   <Cog6ToothIcon className="h-5 w-5 text-blue-gray-500" />
                 </IconButton>
               </MenuHandler>
               <MenuList className="w-max border-0">
                 {/* Add your menu items here */}
-                <MenuItem>
+                {/* <MenuItem>
                   <Typography variant="small" color="blue-gray">
                     Settings
                   </Typography>
@@ -229,7 +231,7 @@ export function DashboardNavbar() {
                   <Typography variant="small" color="blue-gray">
                     Account
                   </Typography>
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem>
                   {/* Replace with your logout logic */}
                   <Typography

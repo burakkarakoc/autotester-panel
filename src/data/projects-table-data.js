@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "@/context";
-import { fetchProjects } from "@/services/project";
+import { useState, useEffect, useContext } from "react";
+import { AppContext, useAuth } from "@/context";
+// import { fetchProjects } from "@/services/project";
 
 const useProjectsData = () => {
   const { user } = useAuth();
-  const [projectsData, setProjectsData] = useState([]);
+  const { projectsData } = useContext(AppContext);
+  const [data, setProjectsData] = useState([]);
 
   const calculate_success_rate = (runs_array) => {
     let total = 0;
@@ -22,10 +23,11 @@ const useProjectsData = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (user) {
+      if (user && projectsData) {
         const uid = user.uid;
         try {
-          const companyData = await fetchProjects(uid);
+          // const companyData = await fetchProjects(uid);
+          const companyData = projectsData;
           const projects = companyData.data.projects;
           const processedProjects = Object.entries(projects).map(
             ([key, project]) => ({
@@ -44,9 +46,9 @@ const useProjectsData = () => {
     };
 
     fetchData();
-  }, []);
+  }, [projectsData]);
 
-  return projectsData;
+  return data;
 };
 
 export default useProjectsData;

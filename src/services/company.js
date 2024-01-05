@@ -19,7 +19,6 @@ export const fetchCompany = async (uid) => {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const data = await response.json();
-    // console.log(data);
     return data; // Return the data here
   } catch (error) {
     console.error("Error:", error);

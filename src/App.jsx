@@ -2,7 +2,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { Dashboard, Auth } from "@/layouts";
 import { useAuth } from "@/context";
 import { Progress } from "@material-tailwind/react";
-import { useState, useEffect } from "react";
 
 function App() {
   const { user, loading } = useAuth();

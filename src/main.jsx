@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@material-tailwind/react";
-import { MaterialTailwindControllerProvider } from "@/context";
+import { AppProvider, MaterialTailwindControllerProvider } from "@/context";
 import { AuthProvider } from "@/context";
 import "./css/tailwind.css";
 
@@ -13,7 +13,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <ThemeProvider>
         <MaterialTailwindControllerProvider>
           <AuthProvider>
-            <App />
+            <AppProvider>
+              <App />
+            </AppProvider>
           </AuthProvider>
         </MaterialTailwindControllerProvider>
       </ThemeProvider>

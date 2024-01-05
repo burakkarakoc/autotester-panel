@@ -20,28 +20,31 @@ class TopCardItem {
   }
 }
 
-import { useState, useEffect } from "react";
-import { useAuth } from "@/context";
-import { fetchCompany } from "@/services/company";
+import { useState, useEffect, useContext } from "react";
+import { AppContext, useAuth } from "@/context";
 import {
   ChartBarIcon,
   BuildingOfficeIcon,
   BugAntIcon,
   UserIcon,
 } from "@heroicons/react/24/solid";
-import { fetchUser } from "@/services/user";
+// import { fetchUser } from "@/services/user";
+// import { fetchCompany } from "@/services/company";
 
 const useTopCardItems = () => {
   const { user } = useAuth();
   const [topCardItems, setTopCardItems] = useState([]);
+  const { userData, companyData } = useContext(AppContext);
 
   useEffect(() => {
     const fetchData = async () => {
-      if (user) {
+      if ((user, userData, companyData)) {
         const uid = user.uid;
         try {
-          const companyData = await fetchCompany(uid);
-          const userData = await fetchUser(uid);
+          // improved efficiency by eliminating fetches at each tab
+          // const companyData = await fetchCompany(uid);
+          // const userData = await fetchUser(uid);
+
           let totalRunCount = 0;
 
           for (let project in companyData.data.projects) {
@@ -96,7 +99,7 @@ const useTopCardItems = () => {
     };
 
     fetchData();
-  }, [user]);
+  }, [user, userData, companyData]);
 
   return topCardItems;
 };
