@@ -201,7 +201,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const registers = async () => {
-      if (identityToken) {
+      if (identityToken && internalUserForContext) {
         localStorage.setItem("user_token", identityToken);
         console.log("User token: " + identityToken);
         await registerUserToDB(
@@ -217,15 +217,16 @@ export const AuthProvider = ({ children }) => {
     registers();
   }, [identityToken]);
 
+  // TRIGGERED AT EACH PAGE REFRESH!
   // Listen to the Firebase Auth state and set the user
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // setUser(user);
+        setUser(user);
         setLoading(false); // Set loading to false once the user is fetched
         // getTokenFromBackend(user.uid);
       } else {
-        // setUser(null);
+        setUser(null);
         setLoading(false); // Set loading to false once the user is fetched
       }
     });

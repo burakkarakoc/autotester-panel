@@ -90,7 +90,7 @@ export function SignIn() {
               }}
             />
           </div>
-          <Checkbox
+          {/* <Checkbox
             label={
               <Typography
                 variant="small"
@@ -107,7 +107,7 @@ export function SignIn() {
               </Typography>
             }
             containerProps={{ className: "-ml-2.5" }}
-          />
+          /> */}
           <div className="flex justify-center items-center">
             <Button type="submit" className="mt-6" fullWidth>
               Sign In

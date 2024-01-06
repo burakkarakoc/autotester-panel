@@ -55,6 +55,7 @@ export function Profile() {
   const [activeTab, setActiveTab] = useState("report");
   const [projectTests, setProjectData] = useState(null);
   const [runsOfProject, setRuns] = useState(null);
+  const [avatar, setAvatar] = useState(null);
 
   const handleProjectRowClick = async (projectId) => {
     try {
@@ -90,14 +91,37 @@ export function Profile() {
     setSelectedTest(null);
   };
 
+  const generatePPwithInitials = (username) => {
+    let initials = username.charAt(0) + " " + username.charAt(1);
+    initials = initials.toUpperCase();
+    const coolColors = [
+      "bg-blue-500",
+      "bg-green-500",
+      "bg-cyan-500",
+      "bg-indigo-500",
+      "bg-purple-500",
+    ];
+    const randomColor =
+      coolColors[Math.floor(Math.random() * coolColors.length)];
+    console.log(randomColor);
+    return (
+      <div
+        alt={username}
+        className={`${randomColor} flex items-center justify-center w-[4rem] h-[4rem] rounded-lg shadow-lg shadow-blue-gray-500/40 text-lg font-bold text-white`}
+      >
+        {initials}
+      </div>
+    );
+  };
+
   useEffect(() => {
     const getUserData = async () => {
       if (user) {
         const uid = user.uid;
         const data = await fetchUser(uid);
-
-        // console.log(data.data);
         setUserData(data.data);
+        setAvatar(generatePPwithInitials(data.data.username));
+        return;
       }
     };
     getUserData();
@@ -125,16 +149,18 @@ export function Profile() {
             {userData ? (
               <div className="flex items-center gap-6">
                 {/* profile avatar */}
-                <Avatar
+                {avatar}
+                {/* {generatePPwithInitials(userData.username)} */}
+                {/* <Avatar
                   src={userData.img}
-                  alt={userData.id}
+                  alt={userData.username}
                   size="xl"
                   variant="rounded"
                   className="rounded-lg shadow-lg shadow-blue-gray-500/40"
-                />
+                /> */}
                 <div>
-                  <Typography variant="h6" color="blue-gray" className="mb-1">
-                    ID: {userData.id}
+                  <Typography variant="h4" color="blue-gray" className="mb-1">
+                    {userData.username}
                   </Typography>
                   <Typography
                     variant="small"

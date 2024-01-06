@@ -1,30 +1,34 @@
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Typography,
-  Avatar,
-  Chip,
-  Tooltip,
-  Progress,
-  Button,
-} from "@material-tailwind/react";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
-import {
-  authorsTableData,
-  // projectsTableData,
-  // testsTableData,
-} from "@/data";
-import useProjectsData from "@/data/projects-table-data";
-import useTestsData from "@/data/mock-test-runs-data";
+// import {
+//   Card,
+//   CardHeader,
+//   CardBody,
+//   Typography,
+//   Avatar,
+//   Chip,
+//   Tooltip,
+//   Progress,
+//   Button,
+// } from "@material-tailwind/react";
+// import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+// import useProjectsData from "@/data/projects-table-data";
+// import useTestsData from "@/data/mock-test-runs-data";
+import { TestsTable } from "./testsTable";
 
-export function Tables() {
-  const projectsTableData = useProjectsData();
-  const testsData = useTestsData();
+export function Scenarios() {
+  // const projectsTableData = useProjectsData();
+  // const testsData = useTestsData();
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
-      <Card>
+      <TestsTable />
+    </div>
+  );
+}
+
+export default Scenarios;
+
+{
+  /* <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
           <Typography variant="h6" color="white">
             Projects Table
@@ -113,8 +117,10 @@ export function Tables() {
                             className="h-1"
                           />
                         </div>
-                      </td>
-                      {/* <td className={className}>
+                      </td> */
+}
+{
+  /* <td className={className}>
                         <Typography
                           as="a"
                           href="#"
@@ -125,8 +131,10 @@ export function Tables() {
                             className="h-5 w-5 text-inherit"
                           />
                         </Typography>
-                      </td> */}
-                    </tr>
+                      </td> */
+}
+{
+  /* </tr>
                   );
                 }
               )}
@@ -203,8 +211,10 @@ export function Tables() {
                       >
                         <Button color="red">Delete</Button>
                       </Typography>
-                    </td>
-                    {/* <td className={className}>
+                    </td> */
+}
+{
+  /* <td className={className}>
                       <div className="flex items-center gap-4">
                         <Avatar
                           src={img}
@@ -225,32 +235,34 @@ export function Tables() {
                           </Typography>
                         </div>
                       </div>
-                    </td> */}
-                    {/* <td className={className}>
+                    </td> */
+}
+{
+  /* <td className={className}>
                       <Typography className="text-xs font-semibold text-blue-gray-600">
                         {job[0]}
                       </Typography>
                       <Typography className="text-xs font-normal text-blue-gray-500">
                         {job[1]}
                       </Typography>
-                    </td> */}
-                    {/* <td className={className}>
+                    </td> */
+}
+{
+  /* <td className={className}>
                       <Chip
                         variant="gradient"
                         color={online ? "green" : "blue-gray"}
                         value={online ? "online" : "offline"}
                         className="py-0.5 px-2 text-[11px] font-medium w-fit"
                       />
-                    </td> */}
-                  </tr>
+                    </td> */
+}
+{
+  /* </tr>
                 );
               })}
             </tbody>
           </table>
         </CardBody>
-      </Card>
-    </div>
-  );
+      </Card> */
 }
-
-export default Tables;

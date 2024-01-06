@@ -3,10 +3,13 @@ import {
   UserCircleIcon,
   TableCellsIcon,
   InformationCircleIcon,
+  BugAntIcon,
   ServerStackIcon,
   RectangleStackIcon,
+  CpuChipIcon,
+  ClockIcon,
 } from "@heroicons/react/24/solid";
-import { Home, Profile, Tables, Plans } from "@/pages/dashboard";
+import { Home, Profile, Scenarios, Plans } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
 
 const icon = {
@@ -30,17 +33,36 @@ export const routes = [
         element: <Profile />,
       },
       {
-        icon: <TableCellsIcon {...icon} />,
-        name: "tables",
-        path: "/tables",
-        element: <Tables />,
+        icon: <BugAntIcon {...icon} />,
+        name: "Scenarios",
+        path: "/scenarios",
+        element: <Scenarios />,
       },
       {
-        icon: <InformationCircleIcon {...icon} />,
-        name: "plans",
+        icon: <RectangleStackIcon {...icon} />,
+        name: "Plans",
         path: "/plans",
-        element: <Plans />,
+        element: <></>,
       },
+      {
+        icon: <CpuChipIcon {...icon} />,
+        name: "Automate",
+        path: "/automate",
+        element: <></>,
+      },
+
+      // {
+      //   icon: <TableCellsIcon {...icon} />,
+      //   name: "tables",
+      //   path: "/tables",
+      //   element: <Tables />,
+      // },
+      // {
+      //   icon: <InformationCircleIcon {...icon} />,
+      //   name: "plans",
+      //   path: "/plans",
+      //   element: <Plans />,
+      // },
     ],
   },
   {
