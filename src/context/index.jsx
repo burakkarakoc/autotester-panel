@@ -98,8 +98,13 @@ import {
 const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [internalUserForContext, setinternalUserForContext] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [identityToken, setToken] = useState("");
+  const [identityToken, setToken] = useState(null);
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [company, setCompany] = useState(null);
 
   const login = async (email, password) => {
     const userCredential = await signInWithEmailAndPassword(
@@ -108,20 +113,38 @@ export const AuthProvider = ({ children }) => {
       password
     );
     setUser(userCredential.user);
+    // setinternalUserForContext(userCredential.user);
+    getTokenFromBackend(userCredential.user.uid);
   };
 
-  const signup = async (email, password, company) => {
+  const signup = async (email, password, username, company) => {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
-    setUser(userCredential.user);
+    setEmail(email);
+    setPassword(password);
+    setUsername(username);
+    setCompany(company);
+    // setUser(userCredential.user);
+    setinternalUserForContext(userCredential.user);
+    await getTokenFromBackend(userCredential.user.uid);
+  };
 
+  const registerUserToDB = async (
+    uid,
+    email,
+    password,
+    username,
+    company,
+    token
+  ) => {
     var formdata = new FormData();
-    formdata.append("uid", userCredential.user.uid);
+    formdata.append("uid", uid);
     formdata.append("email", email);
     formdata.append("password", password);
+    formdata.append("username", username);
     formdata.append("company", company);
 
     var requestOptions = {
@@ -130,13 +153,12 @@ export const AuthProvider = ({ children }) => {
       redirect: "follow",
     };
 
-    fetch(
-      "http://127.0.0.1:105/controller/user/create?token=" + identityToken,
-      requestOptions
-    )
+    fetch("http://127.0.0.1:205/user/create?token=" + token, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
+        console.log(internalUserForContext);
+        setUser(internalUserForContext);
         return result;
       })
       .catch((error) => {
@@ -150,7 +172,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  function getTokenFromBackend(uid) {
+  async function getTokenFromBackend(uid) {
     /*
       Gets token from backend based on uid.
     */
@@ -178,21 +200,32 @@ export const AuthProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    if (identityToken !== "") {
-      localStorage.setItem("user_token", identityToken);
-      console.log("User token: " + identityToken);
-    }
+    const registers = async () => {
+      if (identityToken) {
+        localStorage.setItem("user_token", identityToken);
+        console.log("User token: " + identityToken);
+        await registerUserToDB(
+          internalUserForContext.uid,
+          email,
+          password,
+          username,
+          company,
+          identityToken
+        );
+      }
+    };
+    registers();
   }, [identityToken]);
 
   // Listen to the Firebase Auth state and set the user
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        getTokenFromBackend(user.uid);
-        setUser(user);
+        // setUser(user);
         setLoading(false); // Set loading to false once the user is fetched
+        // getTokenFromBackend(user.uid);
       } else {
-        setUser(null);
+        // setUser(null);
         setLoading(false); // Set loading to false once the user is fetched
       }
     });
@@ -202,7 +235,15 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, signup, logout, loading, identityToken }}
+      value={{
+        user,
+        login,
+        signup,
+        logout,
+        loading,
+        identityToken,
+        registerUserToDB,
+      }}
     >
       {children}
     </AuthContext.Provider>

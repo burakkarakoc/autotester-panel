@@ -13,11 +13,10 @@ import { func } from "prop-types";
 export function SignUp() {
   const { user, signup } = useAuth();
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [code, setCode] = useState("");
-  // const [error, setError] = useState("");
-  // const [token, setToken] = useState("");
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -43,9 +42,10 @@ export function SignUp() {
         return;
       }
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
       try {
-        await signup(email, password, data.company_name);
+        await signup(email, password, username, data.company_name);
+        // window.location.reload();
       } catch (error) {
         alert("Failed");
         console.error("Error during signup", error.message);
@@ -86,7 +86,7 @@ export function SignUp() {
               color="blue-gray"
               className="-mb-3 font-medium"
             >
-              Your email
+              Email
             </Typography>
             <Input
               type="email"
@@ -99,13 +99,32 @@ export function SignUp() {
               }}
             />
           </div>
+          <div className="mb-1 flex flex-col gap-6">
+            <Typography
+              variant="small"
+              color="blue-gray"
+              className="-mb-3 font-medium"
+            >
+              Username
+            </Typography>
+            <Input
+              type="text"
+              size="lg"
+              placeholder="johndoe"
+              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+              onChange={(e) => setUsername(e.target.value)}
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+            />
+          </div>
           <div className="mb-1 mt-3 flex flex-col gap-6">
             <Typography
               variant="small"
               color="blue-gray"
               className="-mb-3 font-medium"
             >
-              Your password
+              Password
             </Typography>
             <Input
               type="password"
