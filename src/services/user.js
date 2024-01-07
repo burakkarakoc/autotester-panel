@@ -1,5 +1,6 @@
 export const fetchUser = async (uid) => {
-  let token = localStorage.getItem("user_token");
+  var token = localStorage.getItem("user_token");
+  // console.log(token);
 
   var formdata = new FormData();
   formdata.append("uid", uid);
@@ -11,6 +12,7 @@ export const fetchUser = async (uid) => {
   };
 
   try {
+    console.log(token);
     const response = await fetch(
       "http://127.0.0.1:205/user?token=" + token,
       requestOptions

@@ -176,7 +176,7 @@ export const AuthProvider = ({ children }) => {
     /*
       Gets token from backend based on uid.
     */
-    const apiUrl = "http://127.0.0.1:105/controller/login_success";
+    const apiUrl = "http://127.0.0.1:105/apigwt";
     const data = { uid: uid };
     const requestOptions = {
       method: "POST",
@@ -201,9 +201,11 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const registers = async () => {
-      if (identityToken && internalUserForContext) {
+      if (identityToken) {
         localStorage.setItem("user_token", identityToken);
         console.log("User token: " + identityToken);
+      }
+      if (internalUserForContext) {
         await registerUserToDB(
           internalUserForContext.uid,
           email,
@@ -224,7 +226,7 @@ export const AuthProvider = ({ children }) => {
       if (user) {
         setUser(user);
         setLoading(false); // Set loading to false once the user is fetched
-        // getTokenFromBackend(user.uid);
+        getTokenFromBackend(user.uid);
       } else {
         setUser(null);
         setLoading(false); // Set loading to false once the user is fetched
