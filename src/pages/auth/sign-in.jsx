@@ -113,6 +113,11 @@ export function SignIn() {
               Sign In
             </Button>
           </div>
+          {error && (
+            <div className="flex items-center justify-center text-red-500 mt-2">
+              {error}
+            </div>
+          )}
 
           <div className="flex items-center justify-between gap-2 mt-6">
             <Typography variant="small" className="font-medium text-gray-900">
@@ -177,7 +182,6 @@ export function SignIn() {
             </Link>
           </Typography>
         </form>
-        {error && <div className="text-red-500 mt-2">{error}</div>}
       </div>
       <div className="w-2/5 h-full hidden lg:block">
         <img

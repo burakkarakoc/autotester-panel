@@ -130,6 +130,7 @@ export const AuthProvider = ({ children }) => {
     // setUser(userCredential.user);
     setinternalUserForContext(userCredential.user);
     await getTokenFromBackend(userCredential.user.uid);
+    setUser(userCredential.user);
   };
 
   const registerUserToDB = async (
@@ -156,9 +157,9 @@ export const AuthProvider = ({ children }) => {
     fetch("http://127.0.0.1:205/user/create?token=" + token, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
-        console.log(internalUserForContext);
-        setUser(internalUserForContext);
+        // console.log(result);
+        // console.log(internalUserForContext);
+        setUser(user);
         return result;
       })
       .catch((error) => {
@@ -200,11 +201,13 @@ export const AuthProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    const registers = async () => {
+    const registersToken = async () => {
       if (identityToken) {
         localStorage.setItem("user_token", identityToken);
-        console.log("User token: " + identityToken);
+        // console.log("User token: " + identityToken);
       }
+    };
+    const registersToDB = async () => {
       if (internalUserForContext) {
         await registerUserToDB(
           internalUserForContext.uid,
@@ -216,10 +219,10 @@ export const AuthProvider = ({ children }) => {
         );
       }
     };
-    registers();
+    registersToDB();
+    registersToken();
   }, [identityToken]);
 
-  // TRIGGERED AT EACH PAGE REFRESH!
   // Listen to the Firebase Auth state and set the user
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {

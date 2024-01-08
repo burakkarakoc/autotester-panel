@@ -8,7 +8,6 @@ import {
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context";
 import { useState, useEffect } from "react";
-import { func } from "prop-types";
 
 export function SignUp() {
   const { user, signup } = useAuth();
@@ -25,34 +24,34 @@ export function SignUp() {
       return;
     }
 
-    if (code == "") {
+    if (code === "") {
       alert("Please provide an invite code to continue...");
       return;
     }
 
-    try {
-      const response = await fetch(
-        `http://localhost:205/code?invite_code=${code}`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      if (response.status == 201) {
-        alert("Please provide a valid invitation code...");
-        return;
-      }
-      const data = await response.json();
-      // console.log(data);
-      try {
-        await signup(email, password, username, data.company_name);
-        // window.location.reload();
-      } catch (error) {
-        alert("Failed");
-        console.error("Error during signup", error.message);
-      }
-    } catch (error) {
-      setError("Failed to fetch company: " + error.message);
-    }
+    fetch(`http://localhost:205/code?invite_code=${code}&username=${username}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(response.status);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Response Data:", data);
+        signup(email, password, username, data);
+        //HERE
+      })
+      .then(() => {
+        // Handle successful signup if needed
+      })
+      .catch((error) => {
+        if (error.message == 404) {
+          alert("Invite code not found...");
+        } else if (error.message == 403) {
+          alert("Invite code is not correct or expired...");
+        }
+        console.log(error);
+      });
   };
 
   return (
@@ -175,7 +174,7 @@ export function SignUp() {
           </Button>
 
           <div className="space-y-4 mt-8">
-            <Button
+            {/* <Button
               size="lg"
               color="white"
               className="flex items-center gap-2 justify-center shadow-md"
@@ -218,8 +217,8 @@ export function SignUp() {
                 </defs>
               </svg>
               <span>Sign in With Google</span>
-            </Button>
-            <Button
+            </Button> */}
+            {/* <Button
               size="lg"
               color="white"
               className="flex items-center gap-2 justify-center shadow-md"
@@ -227,7 +226,7 @@ export function SignUp() {
             >
               <img src="/img/twitter-logo.svg" height={24} width={24} alt="" />
               <span>Sign in With Twitter</span>
-            </Button>
+            </Button> */}
           </div>
           <Typography
             variant="paragraph"
